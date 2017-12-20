@@ -78,6 +78,7 @@ class JunOSDriver(NetworkDriver):
         if optional_args is None:
             optional_args = {}
 
+        self.logical_systems = optional_args.get('logical_systems', None)
         self.config_lock = optional_args.get('config_lock', False)
         self.port = optional_args.get('port', 22)
         self.key_file = optional_args.get('key_file', None)
@@ -1267,7 +1268,10 @@ class JunOSDriver(NetworkDriver):
         arp_table = []
 
         arp_table_raw = junos_views.junos_arp_table(self.device)
-        arp_table_raw.get()
+        if self.logical_systems is None:
+            arp_table_raw.get()
+        else:
+            arp_table_raw.get(logical_system=self.logical_systems)
         arp_table_items = arp_table_raw.items()
 
         for arp_table_entry in arp_table_items:
