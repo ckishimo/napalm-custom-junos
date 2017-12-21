@@ -325,15 +325,19 @@ class JunOSDriver(NetworkDriver):
         return interface_counters
 
     def get_modules_serials(self):
-        """Return serial number for the hardware installed."""
-        query = junos_views.junos_module_table(self.device)
-        query.get()
+        """Return serial number for the hardware installed and the chassis"""
+        cmodules = junos_views.junos_module_table(self.device)
+        cmodules.get()
+        chassis = junos_views.junos_chassis_table(self.device)
+        chassis.get()
         modules = dict()
-        for item in query.items():
-            name = str(item[0][0])
+        for item in cmodules.items()+chassis.items():
+            print(item)
+            name = str(item[0])
             modules[name] = dict()
             for index, value in item[1]:
                 modules[name][index] = value
+
         return modules
 
     def get_environment(self):

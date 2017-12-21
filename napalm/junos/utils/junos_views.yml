@@ -4,12 +4,24 @@
 #### Inventory table
 ####
 
+junos_chassis_table:
+  rpc: get-chassis-inventory
+  item: chassis
+  #key:
+  #  - name
+  view: junos_chassis_view
+
+junos_chassis_view:
+  fields:
+    serial: serial-number
+    description: description
+
 junos_module_table:
   rpc: get-chassis-inventory
   #item: .//chassis-sub-module|.//chassis-module|.//chassis-sub-sub-module
   item: .//chassis-module
-  key:
-    - name
+  #key:
+  #  - name
   view: junos_module_view
 
 junos_module_view:
