@@ -2036,7 +2036,10 @@ class JunOSDriver(NetworkDriver):
 
         network_instances = {}
 
-        ri_table = junos_views.junos_nw_instances_table(self.device)
+        if self.logical_systems is None:
+            ri_table = junos_views.junos_nw_instances_table(self.device)
+        else:
+            ri_table = junos_views.junos_logical_systems_nw_instances_table(self.device)
         ri_table.get()
         ri_entries = ri_table.items()
 
