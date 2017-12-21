@@ -332,13 +332,46 @@ class JunOSDriver(NetworkDriver):
         chassis.get()
         modules = dict()
         for item in cmodules.items()+chassis.items():
-            print(item)
             name = str(item[0])
             modules[name] = dict()
             for index, value in item[1]:
                 modules[name][index] = value
 
         return modules
+
+    def get_optics_serials(self):
+        """
+        Return serial number for the optics installed in any interface of the chassis
+        Indexed by interface name
+        """
+        optics = junos_views.junos_optics_table(self.device)
+        optics.get()
+        modules = dict()
+        result = dict()
+        for item in optics.items():
+            name = str(item[0])
+            modules[name] = dict()
+            for index, value in item[1]:
+                modules[name][index] = value
+
+        # Convert information to interface-name
+        for name in modules.keys():
+            if "Xcvr" in name:
+                # This is an optic, let's find the interface
+                if "10G" in modules[name]['description']:
+                    iface_name = 'xe'
+                elif "40G" in modules[name]['description']:
+                    iface_name = 'et'
+                elif "100G" in modules[name]['description']:
+                    iface_name = 'et'
+                else:
+                    iface_name = 'ge'
+                linecard = modules[name]['linecard'].replace("FPC ","")
+                pic = modules[name]['pic'].replace("PIC ","")
+                xcvr, port = name.split(" ")
+                iface = "%s-%s/%s/%s" % (iface_name, linecard, pic, port)
+                result[iface] = modules[name].copy()
+        return result
 
     def get_environment(self):
         """Return environment details."""

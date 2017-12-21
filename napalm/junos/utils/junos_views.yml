@@ -31,6 +31,21 @@ junos_module_view:
     version: version
     description: description
 
+junos_optics_table:
+  rpc: get-chassis-inventory
+  #item: .//chassis-sub-module|.//chassis-module|.//chassis-sub-sub-module
+  item: .//chassis-module/chassis-sub-module/chassis-sub-sub-module
+  view: junos_optics_view
+
+junos_optics_view:
+  fields:
+    pic: ../name
+    linecard: ../../name
+    serial: serial-number
+    part-number: part-number
+    version: version
+    description: description
+
 ####
 #### Interface table
 ####
