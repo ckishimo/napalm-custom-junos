@@ -569,7 +569,10 @@ class JunOSDriver(NetworkDriver):
 
         def _get_uptime_table(instance):
             if instance not in uptime_table_lookup:
-                uptime_table_lookup[instance] = uptime_table.get(instance=instance).items()
+                if self.logical_systems is not None:
+                    uptime_table_lookup[instance] = uptime_table.get(instance=instance,logical_system=self.logical_systems).items()
+                else:
+                    uptime_table_lookup[instance] = uptime_table.get(instance=instance).items()
             return uptime_table_lookup[instance]
 
         def _get_bgp_neighbors_core(neighbor_data, instance=None, uptime_table_items=None):
@@ -635,14 +638,21 @@ class JunOSDriver(NetworkDriver):
         #     int, self.device.facts.get('version', '0.0').split('.')[0], 0) < 15
 
         # if old_junos:
-        instances = junos_views.junos_route_instance_table(self.device).get()
+        if self.logical_systems is not None:
+            instances = junos_views.junos_route_instance_table(self.device).get(logical_system=self.logical_systems)
+        else:
+            instances = junos_views.junos_route_instance_table(self.device).get()
         for instance, instance_data in instances.items():
             if instance.startswith('__'):
                 # junos internal instances
                 continue
             bgp_neighbor_data[instance] = {'peers': {}}
-            instance_neighbors = bgp_neighbors_table.get(instance=instance).items()
-            uptime_table_items = uptime_table.get(instance=instance).items()
+            if self.logical_systems is not None:
+                instance_neighbors = bgp_neighbors_table.get(instance=instance,logical_system=self.logical_systems).items()
+                uptime_table_items = uptime_table.get(instance=instance,logical_system=self.logical_systems).items()
+            else:
+                instance_neighbors = bgp_neighbors_table.get(instance=instance).items()
+                uptime_table_items = uptime_table.get(instance=instance).items()
             _get_bgp_neighbors_core(instance_neighbors,
                                     instance=instance,
                                     uptime_table_items=uptime_table_items)
