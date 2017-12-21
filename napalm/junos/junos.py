@@ -1521,6 +1521,9 @@ class JunOSDriver(NetworkDriver):
         if protocol and isinstance(destination, py23_compat.string_types):
             rt_kargs['protocol'] = protocol
 
+        if self.logical_systems is not None:
+            rt_kargs['logical-system'] = self.logical_systems
+
         try:
             routes_table.get(**rt_kargs)
         except RpcTimeoutError:
