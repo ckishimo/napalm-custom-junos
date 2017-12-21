@@ -863,6 +863,10 @@ class JunOSDriver(NetworkDriver):
     def get_bgp_config(self, group='', neighbor=''):
         """Return BGP configuration."""
         def _check_nhs(policies):
+            """
+            Check in the given list of policies, if there is a term with "then next-hop self"
+
+            """
             if not isinstance(policies, list):
                 # Make it a list if it is a single policy
                 policies = [policies]
