@@ -68,6 +68,24 @@ junos_iface_view:
     speed: speed
     mac_address: current-physical-address
 
+junos_iface_eror_table:
+  rpc: get-interface-information
+  args:
+    extensive: True
+  args_key: interface_name
+  item: physical-interface
+  view: junos_iface_error_view
+
+junos_iface_error_view:
+  fields:
+    name: name
+    is_enabled: { admin-status: True=up }
+    is_up: { oper-status: True=up }
+    mtu: mtu
+    flowcontrol: {if-flow-control: True=enabled}
+    flap: interface-flapped
+
+
 junos_logical_iface_table:
   rpc: get-interface-information
   item: physical-interface/logical-interface
