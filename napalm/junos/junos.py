@@ -1773,6 +1773,7 @@ class JunOSDriver(NetworkDriver):
         size_str = ''
         count_str = ''
         vrf_str = ''
+        logical_systems_str = ''
 
         if source:
             source_str = ' source {source}'.format(source=source)
@@ -1786,8 +1787,10 @@ class JunOSDriver(NetworkDriver):
             count_str = ' count {count}'.format(count=count)
         if vrf:
             vrf_str = ' routing-instance {vrf}'.format(vrf=vrf)
+        if self.logical_systems is not None:
+            logical_systems_str = ' logical-system {logical_systems}'.format(logical_systems=self.logical_systems)
 
-        ping_command = 'ping {destination}{source}{ttl}{timeout}{size}{count}{vrf}'.format(
+        ping_command = 'ping {destination}{source}{ttl}{timeout}{size}{count}{vrf}{logical_systems}'.format(
             destination=destination,
             source=source_str,
             ttl=maxttl_str,
