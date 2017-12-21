@@ -360,6 +360,8 @@ class JunOSDriver(NetworkDriver):
                 # This is an optic, let's find the interface
                 if "10G" in modules[name]['description']:
                     iface_name = 'xe'
+                elif "1G" in modules[name]['description']:
+                    iface_name = 'ge'
                 elif "40G" in modules[name]['description']:
                     iface_name = 'et'
                 elif "100G" in modules[name]['description']:
