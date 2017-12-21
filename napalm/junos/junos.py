@@ -1261,6 +1261,28 @@ class JunOSDriver(NetworkDriver):
 
         return arp_table
 
+    def get_ospf_neighbors_table(self):
+        """Return the OSPF neighbors table."""
+
+        ospf_table = []
+
+        ospf_table_raw = junos_views.junos_ospf_neighbors_table(self.device)
+        if self.logical_systems is None:
+            ospf_table_raw.get()
+        else:
+            ospf_table_raw.get(logical_system=self.logical_systems)
+        ospf_table_items = ospf_table_raw.items()
+
+        for ospf_table_entry in ospf_table_items:
+            ospf_entry = {
+                elem[0]: elem[1] for elem in ospf_table_entry[1]
+            }
+            ospf_entry['neighbor-address'] = napalm.base.helpers.ip(ospf_entry.get('neighbor-address'))
+            ospf_entry['neighbor-id'] = napalm.base.helpers.ip(ospf_entry.get('neighbor-id'))
+            ospf_table.append(ospf_entry)
+
+        return ospf_table
+
     def get_ipv6_neighbors_table(self):
         """Return the IPv6 neighbors table."""
         ipv6_neighbors_table = []
