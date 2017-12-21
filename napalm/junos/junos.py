@@ -324,6 +324,18 @@ class JunOSDriver(NetworkDriver):
             interface_counters[interface] = {k: v if v is not None else -1 for k, v in counters}
         return interface_counters
 
+    def get_modules_serials(self):
+        """Return serial number for the hardware installed."""
+        query = junos_views.junos_module_table(self.device)
+        query.get()
+        modules = dict()
+        for item in query.items():
+            name = str(item[0][0])
+            modules[name] = dict()
+            for index, value in item[1]:
+                modules[name][index] = value
+        return modules
+
     def get_environment(self):
         """Return environment details."""
         environment = junos_views.junos_environment_table(self.device)
