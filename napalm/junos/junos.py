@@ -1261,6 +1261,25 @@ class JunOSDriver(NetworkDriver):
 
         return arp_table
 
+    def get_mpls_rsvp_lsp_table(self):
+        """Return the OSPF neighbors table."""
+        mpls_table = []
+
+        mpls_table_raw = junos_views.junos_mpls_rsvp_lsp_table(self.device)
+        if self.logical_systems is None:
+            mpls_table_raw.get()
+        else:
+            mpls_table_raw.get(logical_system=self.logical_systems)
+        mpls_table_items = mpls_table_raw.items()
+
+        for mpls_table_entry in mpls_table_items:
+            mpls_entry = {
+                elem[0]: elem[1] for elem in mpls_table_entry[1]
+            }
+            mpls_table.append(mpls_table_entry)
+
+        return mpls_table
+
     def get_ipv6_neighbors_table(self):
         """Return the IPv6 neighbors table."""
         ipv6_neighbors_table = []
