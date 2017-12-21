@@ -2018,6 +2018,11 @@ class JunOSDriver(NetworkDriver):
             'database': 'candidate'
         }
 
+        if self.logical_systems is not None:
+            filter_xml = '<logical-systems><name>{logical_systems}</name></logical-systems>'.format(logical_systems=self.logical_systems)
+        else:
+            filter_xml = None
+
         if retrieve in ('candidate', 'all'):
             config = self.device.rpc.get_config(filter_xml=None, options=options)
             rv['candidate'] = py23_compat.text_type(config.text)
