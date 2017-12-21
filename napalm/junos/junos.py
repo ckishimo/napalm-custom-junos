@@ -1704,6 +1704,7 @@ class JunOSDriver(NetworkDriver):
         maxttl_str = ''
         wait_str = ''
         vrf_str = ''
+        logical_systems_str = ''
 
         if source:
             source_str = ' source {source}'.format(source=source)
@@ -1713,13 +1714,16 @@ class JunOSDriver(NetworkDriver):
             wait_str = ' wait {timeout}'.format(timeout=timeout)
         if vrf:
             vrf_str = ' routing-instance {vrf}'.format(vrf=vrf)
+        if self.logical_systems is not None:
+            logical_systems_str = ' logical-system {logical_systems}'.format(logical_systems=self.logical_systems)
 
-        traceroute_command = 'traceroute {destination}{source}{maxttl}{wait}{vrf}'.format(
+        traceroute_command = 'traceroute {destination}{source}{maxttl}{wait}{vrf}{logical_systems}'.format(
             destination=destination,
             source=source_str,
             maxttl=maxttl_str,
             wait=wait_str,
-            vrf=vrf_str
+            vrf=vrf_str,
+            logical_systems=logical_systems_str
         )
 
         traceroute_rpc = E('command', traceroute_command)
